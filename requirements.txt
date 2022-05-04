@@ -1,0 +1,22 @@
+
+# packaging
+pip>=9
+setuptools>=26
+twine
+wheel>=0.29
+
+# data science
+six==1.14.0
+
+
+#img
+tqdm
+pillow
+opencv-python
+mediapipe
+
+numpy
+
+gcsfs
+google-cloud-storage
+uvicorn
