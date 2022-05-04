@@ -1,6 +1,5 @@
-import utils.poseDetector as pm
+import aiworkout.poseDetector as pm
 import cv2
-import base64
 
 def return_angle_squat(img):
     detector = pm.poseDetector()

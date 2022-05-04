@@ -14,7 +14,7 @@ tqdm
 pillow
 opencv-python
 mediapipe
-
+fastapi
 numpy
 
 gcsfs
