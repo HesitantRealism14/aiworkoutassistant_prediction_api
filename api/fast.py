@@ -5,11 +5,12 @@ from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_
 import cv2
 import uvicorn
 import numpy as np
+import joblib
 
 from typing import Optional
 from pydantic import BaseModel
 
-
+PATH_TO_LOCAL_MODEL = 'raw_data/train_img'
 class Item(BaseModel):
     name: str
     description: Optional[str] = None
@@ -27,6 +28,17 @@ app.add_middleware(
 @app.get("/")
 def index():
     return {"greeting": "Hello world"}
+
+@app.get("/predict_pose")
+def make_predict(img):
+
+    model = joblib.load(PATH_TO_LOCAL_MODEL)
+    y_pred = model.predict(img)
+
+    classes = {'bench':0,
+               'deadlift':1,
+               'squat':2}
+    return {'workout_pose':classes.get(np.argmax(y_pred),'workout pose not found')}
 
 @app.post("/getanglesquat")
 async def getanglesquat(img: UploadFile=File(...)):
@@ -48,6 +60,9 @@ async def getanglebench(img: UploadFile=File(...)):
     nparr = np.fromstring(contents, np.uint8)
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return {'angle': return_angle_deadlift(cv2_img)}
+
+
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

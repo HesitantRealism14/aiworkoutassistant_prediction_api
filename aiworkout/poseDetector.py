@@ -18,7 +18,6 @@ class poseDetector():
         self.pose = self.mpPose.Pose(self.mode,self.upBody,self.smooth,self.detectionCon,self.trackCon)
 
     def findPose(self,img,draw=True):
-        img = cv2.imread(img)
         imgRGB = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         self.results = self.pose.process(imgRGB)
         if self.results.pose_landmarks:
@@ -27,7 +26,6 @@ class poseDetector():
         return img
 
     def findPosition(self,img,draw=True):
-        img = cv2.imread(img)
         self.lmList=[]
         if self.results.pose_landmarks:
             for id,lm in enumerate(self.results.pose_landmarks.landmark):
@@ -51,7 +49,6 @@ class poseDetector():
         #print(angle)
 
         if draw:
-            img = cv2.imread(img)
             cv2.line(img,(x1,y1),(x2,y2),(255,255,255),3)
             cv2.line(img,(x3,y3),(x2,y2),(255,255,255),3)
 
@@ -92,9 +89,9 @@ class poseDetector():
     #     cv2.waitKey(1)
 
 
-if __name__ == "__main__":
-    img='data/homesquat1.jpeg'
-    object = poseDetector()
-    object.findPose(img)
-    object.findPosition(img)
-    object.findAngle(img,p1=12,p2=24,p3=26,draw=True)
+# if __name__ == "__main__":
+#     img='data/homesquat1.jpeg'
+#     object = poseDetector()
+#     object.findPose(img)
+#     object.findPosition(img)
+#     object.findAngle(img,p1=12,p2=24,p3=26,draw=True)

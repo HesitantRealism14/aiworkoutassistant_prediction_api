@@ -55,7 +55,7 @@ pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
 
 # path of the file to upload to gcp (the path of the file should be absolute or should match the directory where the make command is run)
-LOCAL_PATH="data"
+LOCAL_PATH="raw_data/train_img"
 
 # project id
 PROJECT_ID=compact-voyager-348405
@@ -70,7 +70,7 @@ BUCKET_FOLDER=data
 # BUCKET_FILE_NAME=another_file_name_if_I_so_desire.csv
 BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
 
-REGION=us-east1
+REGION=eu-west1
 
 set_project:
 	-@gcloud config set project ${PROJECT_ID}
@@ -92,25 +92,25 @@ RUNTIME_VERSION=2.2
 
 ##### Package params  - - - - - - - - - - - - - - - - - - -
 
-PACKAGE_NAME=aiworkout
-FILENAME=find_angle  ######change this when we know the filename
+# PACKAGE_NAME=aiworkout
+# FILENAME=find_angle  ######change this when we know the filename
 
 ##### Job - - - - - - - - - - - - - - - - - - - - - - - - -
 
-# JOB_NAME=aiworkout_training_pipeline_$(shell date +'%Y%m%d_%H%M%S')
+JOB_NAME=aiworkout_training_pipeline_$(shell date +'%Y%m%d_%H%M%S')
 
 run_locally:
 	@python -m ${PACKAGE_NAME}.${FILENAME}
 
-# gcp_submit_training:
-# 	gcloud ai-platform jobs submit training ${JOB_NAME} \
-# 		--job-dir gs://${BUCKET_NAME}/${BUCKET_TRAINING_FOLDER} \
-# 		--package-path ${PACKAGE_NAME} \
-# 		--module-name ${PACKAGE_NAME}.${FILENAME} \
-# 		--python-version=${PYTHON_VERSION} \
-# 		--runtime-version=${RUNTIME_VERSION} \
-# 		--region ${REGION} \
-# 		--stream-logs
+gcp_submit_training:
+	gcloud ai-platform jobs submit training ${JOB_NAME} \
+		--job-dir gs://${BUCKET_NAME}/${BUCKET_TRAINING_FOLDER} \
+		--package-path ${PACKAGE_NAME} \
+		--module-name ${PACKAGE_NAME}.${FILENAME} \
+		--python-version=${PYTHON_VERSION} \
+		--runtime-version=${RUNTIME_VERSION} \
+		--region ${REGION} \
+		--stream-logs
 
 clean:
 	@rm -f */version.txt
