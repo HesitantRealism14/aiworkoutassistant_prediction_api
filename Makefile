@@ -55,7 +55,7 @@ pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
 
 # path of the file to upload to gcp (the path of the file should be absolute or should match the directory where the make command is run)
-LOCAL_PATH="raw_data/train_img"
+LOCAL_PATH="raw_data/test_img"
 
 # project id
 PROJECT_ID=compact-voyager-348405
@@ -70,7 +70,7 @@ BUCKET_FOLDER=data
 # BUCKET_FILE_NAME=another_file_name_if_I_so_desire.csv
 BUCKET_FILE_NAME=$(shell basename ${LOCAL_PATH})
 
-REGION=eu-west1
+REGION=us-east1
 
 set_project:
 	-@gcloud config set project ${PROJECT_ID}
@@ -79,7 +79,7 @@ create_bucket:
 	-@gsutil mb -l ${REGION} -p ${PROJECT_ID} gs://${BUCKET_NAME}
 
 upload_data:
-	-@gsutil cp ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME}
+	-@gsutil cp -r ${LOCAL_PATH} gs://${BUCKET_NAME}/${BUCKET_FOLDER}/${BUCKET_FILE_NAME}
 
 # will store the packages uploaded to GCP for the training
 BUCKET_TRAINING_FOLDER = 'trainings'
@@ -92,8 +92,8 @@ RUNTIME_VERSION=2.2
 
 ##### Package params  - - - - - - - - - - - - - - - - - - -
 
-# PACKAGE_NAME=aiworkout
-# FILENAME=find_angle  ######change this when we know the filename
+PACKAGE_NAME=aiworkout
+FILENAME=trainer
 
 ##### Job - - - - - - - - - - - - - - - - - - - - - - - - -
 

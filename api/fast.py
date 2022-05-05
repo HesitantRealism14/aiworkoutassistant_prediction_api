@@ -11,6 +11,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 PATH_TO_LOCAL_MODEL = 'raw_data/train_img'
+
 class Item(BaseModel):
     name: str
     description: Optional[str] = None
