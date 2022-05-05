@@ -2,6 +2,7 @@ import time
 import cv2
 import mediapipe as mp
 import math
+import numpy as np
 
 class poseDetector():
     def __init__(self,mode=False,upBody=False,smooth=True,
@@ -17,6 +18,7 @@ class poseDetector():
         self.pose = self.mpPose.Pose(self.mode,self.upBody,self.smooth,self.detectionCon,self.trackCon)
 
     def findPose(self,img,draw=True):
+        img = cv2.imread(img)
         imgRGB = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         self.results = self.pose.process(imgRGB)
         if self.results.pose_landmarks:
@@ -25,11 +27,11 @@ class poseDetector():
         return img
 
     def findPosition(self,img,draw=True):
+        img = cv2.imread(img)
         self.lmList=[]
         if self.results.pose_landmarks:
             for id,lm in enumerate(self.results.pose_landmarks.landmark):
                 h,w,c = img.shape
-                #print(id,lm)
                 cx,cy = int(lm.x * w) , int(lm.y * h)
                 self.lmList.append([id,cx,cy])
                 if draw:
@@ -37,10 +39,8 @@ class poseDetector():
         return self.lmList
 
     def findAngle(self,img,p1,p2,p3,draw=True):
-
         #get landmarks
         x1,y1 = self.lmList[p1][1:]
-        #_,x1,y1 = self.lmList[p1]
         x2,y2 = self.lmList[p2][1:]
         x3,y3 = self.lmList[p3][1:]
 
@@ -51,7 +51,7 @@ class poseDetector():
         #print(angle)
 
         if draw:
-
+            img = cv2.imread(img)
             cv2.line(img,(x1,y1),(x2,y2),(255,255,255),3)
             cv2.line(img,(x3,y3),(x2,y2),(255,255,255),3)
 
@@ -67,30 +67,34 @@ class poseDetector():
         return angle
 
 
-def main():
-    cap = cv2.VideoCapture('test/video2.mp4')
-    pTime = 0
-    detector = poseDetector()
-    while True:
-        success,img = cap.read()
-        img = detector.findPose(img)
-        lmList = detector.findPosition(img,draw=False)
-        if len(lmList) != 0 :
-            print(lmList[15])
-            print(lmList[23])
-            cv2.circle(img,(lmList[15][1],lmList[15][2]),15,(0,0,255),cv2.FILLED)
-            cv2.circle(img,(lmList[23][1],lmList[23][2]),15,(0,0,255),cv2.FILLED)
+# def main():
+    # cap = cv2.VideoCapture('test/video2.mp4')
+    # pTime = 0
+    # detector = poseDetector()
+    # while True:
+    #     success,img = cap.read()
+    #     img = detector.findPose(img)
+    #     lmList = detector.findPosition(img,draw=False)
+    #     if len(lmList) != 0 :
+    #         print(lmList[15])
+    #         print(lmList[23])
+    #         cv2.circle(img,(lmList[15][1],lmList[15][2]),15,(0,0,255),cv2.FILLED)
+    #         cv2.circle(img,(lmList[23][1],lmList[23][2]),15,(0,0,255),cv2.FILLED)
 
-        cTime = time.time()
-        fps = 1/(cTime-pTime)
-        pTime = cTime
+    #     cTime = time.time()
+    #     fps = 1/(cTime-pTime)
+    #     pTime = cTime
 
-        cv2.putText(img,str(int(fps)),(70,50),cv2.FONT_HERSHEY_PLAIN,3,
-                    (255,0,0),3)
+    #     cv2.putText(img,str(int(fps)),(70,50),cv2.FONT_HERSHEY_PLAIN,3,
+    #                 (255,0,0),3)
 
-        cv2.imshow('image',img)
-        cv2.waitKey(1)
+    #     cv2.imshow('image',img)
+    #     cv2.waitKey(1)
 
 
 if __name__ == "__main__":
-    main()
+    img='data/homesquat1.jpeg'
+    object = poseDetector()
+    object.findPose(img)
+    object.findPosition(img)
+    object.findAngle(img,p1=12,p2=24,p3=26,draw=True)

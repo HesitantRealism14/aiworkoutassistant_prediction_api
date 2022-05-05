@@ -5,8 +5,9 @@ WORKDIR /aiworkoutassistant_prediction_api
 COPY requirements.txt /aiworkoutassistant_prediction_api/requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-
-
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+RUN pip install python-multipart
 COPY api/fast.py /aiworkoutassistant_prediction_api/api/fast.py
 COPY aiworkout /aiworkoutassistant_prediction_api/aiworkout
 COPY credentials.json /aiworkoutassistant_prediction_api/credentials.json

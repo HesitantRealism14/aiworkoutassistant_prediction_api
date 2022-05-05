@@ -20,3 +20,7 @@ numpy
 gcsfs
 google-cloud-storage
 uvicorn
+
+ffmpeg
+libsm6
+libxext6
