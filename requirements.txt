@@ -16,12 +16,9 @@ opencv-python
 mediapipe
 fastapi
 numpy
+pandas
 
 gcsfs
 google-cloud-storage
 uvicorn
-
-ffmpeg
-libsm6
-libxext6
 termcolor
