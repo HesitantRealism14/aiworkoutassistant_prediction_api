@@ -11,9 +11,11 @@ from mediapipe.python.solutions import pose as mp_pose
 import pickle
 from google.cloud import storage
 from aiworkout.params import PATH_TO_GCP_MODEL, BUCKET_NAME
-
 from typing import Optional
 from pydantic import BaseModel
+from google.oauth2 import service_account
+
+credentials = service_account.Credentials.from_service_account_file('credentials.json')
 
 class Item(BaseModel):
     name: str
@@ -35,7 +37,7 @@ def index():
 
 @app.post("/predict_pose")
 async def make_predict(img:UploadFile=File(...)):
-    client = storage.Client().bucket(BUCKET_NAME)
+    client = storage.Client(credentials=credentials).bucket(BUCKET_NAME)
     contents = await img.read()
     nparr = np.fromstring(contents, np.uint8)
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
@@ -59,7 +61,8 @@ async def make_predict(img:UploadFile=File(...)):
 
     blob = client.blob(PATH_TO_GCP_MODEL)
     blob.download_to_filename('model.pkl')
-    model = pickle.load('model.pkl')
+    with open('model.pkl', 'rb') as pickle_file:
+        model = pickle.load(pickle_file)
     y_pred = model.predict(x_pred[0].reshape(1,99))
     return {'workout pose':y_pred[0]}
 

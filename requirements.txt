@@ -7,7 +7,6 @@ wheel>=0.29
 
 # data science
 six==1.14.0
-joblib
 
 #img
 tqdm
@@ -22,3 +21,4 @@ gcsfs
 google-cloud-storage
 uvicorn
 termcolor
+scikit-learn==0.22

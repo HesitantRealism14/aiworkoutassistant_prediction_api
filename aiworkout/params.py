@@ -9,7 +9,7 @@ PATH_TO_LOCAL_MODEL = 'pipeline.pkl'
 
 BUCKET_TEST_DATA_PATH = 'data/test_img/test_img'
 
-PATH_TO_GCP_MODEL = 'gs://aiworkout/models/AIWorkout/v1/pipeline.pkl'
+PATH_TO_GCP_MODEL = 'models/AIWorkout/v1/pipeline.pkl'
 
 ### GCP configuration - - - - - - - - - - - - - - - - - - -
 
