@@ -1,14 +1,16 @@
+
+import os
 import numpy as np
-from google.cloud import storage
-from aiworkout.params import BUCKET_NAME, BUCKET_TRAIN_DATA_PATH
-import tqdm
+from tqdm import tqdm
 from PIL import Image
 
-def get_data_from_gcp(**kwargs):
-    """method to get the training data (or a portion of it) from google cloud bucket"""
-    # Add Client() here
-    client = storage.Client()
-    path = f"gs://{BUCKET_NAME}/{BUCKET_TRAIN_DATA_PATH}"
+#os.chdir('../')
+
+GCP_PATH = "gs://"
+LOCAL_PATH = "raw_data/train_img/"
+
+def get_img(data_path):
+
     classes = {'bench':0,
                'deadlift':1,
                'squat':2}
@@ -16,19 +18,22 @@ def get_data_from_gcp(**kwargs):
     labels = []
 
     for cl,i in classes.items():
-        img_path = [elt for elt in f"{BUCKET_TRAIN_DATA_PATH}/{cl}" if elt.find('.jpg')>0]
+        img_path = [elt for elt in os.listdir(os.path.join(data_path,cl)) if elt.find('.jpg')>0]
 
-        for img in tqdm(img_path):
-            path = f"{BUCKET_TRAIN_DATA_PATH}/{cl}/{img}"
-            image = Image.open(path).convert('RGB')
-            image = image.resize((256,256))
-            imgs.append(np.array(image))
-            labels.append(i)
+        for img in tqdm(img_path[:120]):
+            path = os.path.join(data_path,cl,img)
+            if os.path.exists(path):
+                image = Image.open(path).convert('RGB')
+                image = image.resize((256,256))
+                imgs.append(np.array(image))
+                labels.append(i)
 
     X = np.array(imgs)
     y = np.array(labels)
 
     return X,y
 
-if __name__ == '__main__':
-    img_data = get_data_from_gcp()
+if __name__ == "__main__":
+
+    X,y = get_img(LOCAL_PATH)
+    print(len(X),len(y))

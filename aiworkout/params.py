@@ -5,10 +5,11 @@ EXPERIMENT_NAME = "[CN] [Shanghai] [HesitantRealism14] [AIWorkout 1]"
 
 ### DATA & MODEL LOCATIONS  - - - - - - - - - - - - - - - - - - -
 
-PATH_TO_LOCAL_MODEL = 'model.joblib'
+PATH_TO_LOCAL_MODEL = 'pipeline.pkl'
 
 BUCKET_TEST_DATA_PATH = 'data/test_img/test_img'
 
+PATH_TO_GCP_MODEL = 'gs://aiworkout/models/AIWorkout/v1/pipeline.pkl'
 
 ### GCP configuration - - - - - - - - - - - - - - - - - - -
 

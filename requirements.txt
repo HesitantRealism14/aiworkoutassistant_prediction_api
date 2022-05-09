@@ -24,3 +24,4 @@ uvicorn
 ffmpeg
 libsm6
 libxext6
+termcolor

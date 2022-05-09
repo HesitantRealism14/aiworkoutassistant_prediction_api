@@ -5,12 +5,15 @@ from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_
 import cv2
 import uvicorn
 import numpy as np
-import joblib
+import pandas as pd
+from mediapipe.python.solutions import drawing_utils as mp_drawing
+from mediapipe.python.solutions import pose as mp_pose
+import pickle
+from google.cloud import storage
+from aiworkout.params import PATH_TO_GCP_MODEL, BUCKET_NAME
 
 from typing import Optional
 from pydantic import BaseModel
-
-PATH_TO_LOCAL_MODEL = 'raw_data/train_img'
 
 class Item(BaseModel):
     name: str
@@ -30,16 +33,35 @@ app.add_middleware(
 def index():
     return {"greeting": "Hello world"}
 
-@app.get("/predict_pose")
-def make_predict(img):
+@app.post("/predict_pose")
+async def make_predict(img:UploadFile=File(...)):
+    client = storage.Client().bucket(BUCKET_NAME)
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    imgRGB = cv2.cvtColor(cv2_img,cv2.COLOR_BGR2RGB)
+    with mp_pose.Pose() as pose_tracker:
+        result = pose_tracker.process(image=imgRGB)
+        pose_landmarks = result.pose_landmarks
 
-    model = joblib.load(PATH_TO_LOCAL_MODEL)
-    y_pred = model.predict(img)
+    if pose_landmarks is not None:
+        mp_drawing.draw_landmarks(
+            image=imgRGB,
+            landmark_list=pose_landmarks,
+            connections=mp_pose.POSE_CONNECTIONS)
+        pose_landmarks = [[lmk.x, lmk.y, lmk.z] for lmk in pose_landmarks.landmark]
+        frame_height, frame_width = imgRGB.shape[:2]
+        pose_landmarks *= np.array([frame_width, frame_height, frame_width])
+        pose_landmarks = np.around(pose_landmarks, 5).flatten().tolist()
 
-    classes = {'bench':0,
-               'deadlift':1,
-               'squat':2}
-    return {'workout_pose':classes.get(np.argmax(y_pred),'workout pose not found')}
+    x_pred = pd.DataFrame(pose_landmarks)
+    x_pred = x_pred.T.to_numpy()
+
+    blob = client.blob(PATH_TO_GCP_MODEL)
+    blob.download_to_filename('model.pkl')
+    model = pickle.load('model.pkl')
+    y_pred = model.predict(x_pred[0].reshape(1,99))
+    return {'workout pose':y_pred[0]}
 
 @app.post("/getanglesquat")
 async def getanglesquat(img: UploadFile=File(...)):
@@ -61,8 +83,6 @@ async def getanglebench(img: UploadFile=File(...)):
     nparr = np.fromstring(contents, np.uint8)
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return {'angle': return_angle_deadlift(cv2_img)}
-
-
 
 
 if __name__ == "__main__":

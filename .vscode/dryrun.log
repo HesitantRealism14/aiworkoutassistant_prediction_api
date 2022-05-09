@@ -1,0 +1,8 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/rachel/aiworkoutassistant_prediction_api'
+pip install -r requirements.txt
+make: Leaving directory '/home/rachel/aiworkoutassistant_prediction_api'
+ 
+Makefile:116: warning: overriding recipe for target 'clean'
+Makefile:21: warning: ignoring old recipe for target 'clean'
+
