@@ -1,18 +1,23 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.datastructures import UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_angle_deadlift
-import cv2
-import uvicorn
-import numpy as np
-import pandas as pd
-from mediapipe.python.solutions import drawing_utils as mp_drawing
-from mediapipe.python.solutions import pose as mp_pose
-import pickle
-from google.cloud import storage
-from aiworkout.params import PATH_TO_GCP_MODEL, BUCKET_NAME
 from typing import Optional
 from pydantic import BaseModel
+
+from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_angle_deadlift
+from aiworkout.params import PATH_TO_GCP_MODEL, BUCKET_NAME
+
+import cv2
+import uvicorn
+import pandas as pd
+import numpy as np
+import pickle
+
+import mediapipe as mp
+from mediapipe.python.solutions import drawing_utils as mp_drawing
+from mediapipe.python.solutions import pose as mp_pose
+
+from google.cloud import storage
 from google.oauth2 import service_account
 
 credentials = service_account.Credentials.from_service_account_file('credentials.json')
@@ -87,6 +92,30 @@ async def getanglebench(img: UploadFile=File(...)):
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return {'angle': return_angle_deadlift(cv2_img)}
 
+@app.post("/annotate")
+async def annotate(img:UploadFile=File(...)):
+    mp_drawing = mp.solutions.drawing_utils
+    mp_holistic = mp.solutions.holistic
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    image_height, image_width, _ = image.shape
+    with mp_holistic.Holistic(static_image_mode=True, model_complexity=2, enable_segmentation=True) as holistic:
+        results = holistic.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        out_image = image.copy()
+        mp_drawing.draw_landmarks(
+            out_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS
+        )
+        mp_drawing.draw_landmarks(
+            out_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS
+        )
+        mp_drawing.draw_landmarks(
+            out_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS
+        )
+        mp_drawing.draw_landmarks(
+            out_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS
+        )
+    return {'annotated': out_image}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
