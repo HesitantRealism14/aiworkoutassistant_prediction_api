@@ -1,8 +1,6 @@
-import time
 import cv2
 import mediapipe as mp
 import math
-import numpy as np
 
 class poseDetector():
     def __init__(self,mode=False,upBody=False,smooth=True,
@@ -43,23 +41,28 @@ class poseDetector():
         x3,y3 = self.lmList[p3][1:]
 
         #calculate angles
-        angle = math.degrees(math.atan2(y3-y2,x3-x2)-math.atan2(y1-y2,x1-x2))
-        if angle<0:
-            angle +=360
-        #print(angle)
+        tan_1 = math.atan2(y3-y2,x3-x2)
+        tan_2 = math.atan2(y1-y2,x1-x2)
+        if tan_1 - tan_2 < 0 :
+            tan_ = abs(tan_1 - tan_2)
+            angle = math.degrees(tan_)
+        elif tan_1 - tan_2 > 3.13 :
+            tan_ = tan_1 - tan_2
+            angle = 360 - math.degrees(tan_)
+        else:
+            tan_ = tan_1 - tan_2
+            angle = math.degrees(tan_)
 
         if draw:
-            cv2.line(img,(x1,y1),(x2,y2),(255,255,255),3)
-            cv2.line(img,(x3,y3),(x2,y2),(255,255,255),3)
+            cv2.line(img,(x1,y1),(x2,y2),(255,255,255),1)
+            cv2.line(img,(x3,y3),(x2,y2),(255,255,255),1)
 
-            cv2.circle(img,(x1,y1),10,(0,0,255),cv2.FILLED)
-            cv2.circle(img,(x1,y1),15,(0,0,255),2)
-            cv2.circle(img,(x2,y2),10,(0,0,255),cv2.FILLED)
-            cv2.circle(img,(x2,y2),15,(0,0,255),2)
-            cv2.circle(img,(x3,y3),10,(0,0,255),cv2.FILLED)
-            cv2.circle(img,(x3,y3),15,(0,0,255),2)
+            cv2.circle(img,(x1,y1),3,(0,255,255),cv2.FILLED)
+            cv2.circle(img,(x2,y2),5,(0,255,255),cv2.FILLED)
+            cv2.circle(img,(x2,y2),10,(0,255,255),2)
+            cv2.circle(img,(x3,y3),3,(0,255,255),cv2.FILLED)
 
-            cv2.putText(img,str(int(angle)),(x2-70,y2+80),cv2.FONT_HERSHEY_PLAIN,2,(255,0,255),2)
+            cv2.putText(img,str(int(angle)),(x2-20,y2+20),cv2.FONT_HERSHEY_PLAIN,1.3,(0,0,200),2)
 
         return angle
 
