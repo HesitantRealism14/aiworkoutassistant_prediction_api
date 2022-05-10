@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from pydantic import BaseModel
 
-from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_angle_deadlift
+from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_angle_deadlift, standardize, check
 from aiworkout.params import PATH_TO_GCP_MODEL, BUCKET_NAME
 
 import cv2
