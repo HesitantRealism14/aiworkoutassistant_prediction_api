@@ -12,8 +12,8 @@ import uvicorn
 import pandas as pd
 import numpy as np
 import pickle
-import base64
-import json
+import io
+from starlette.responses import StreamingResponse
 
 import mediapipe as mp
 from mediapipe.python.solutions import drawing_utils as mp_drawing
@@ -100,8 +100,7 @@ async def annotate(img:UploadFile=File(...)):
     mp_holistic = mp.solutions.holistic
     contents = await img.read()
     nparr = np.fromstring(contents, np.uint8)
-    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    image = cv2.cvtColor(cv2_img,cv2.COLOR_BGR2RGB)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     image_height, image_width, _ = image.shape
     with mp_holistic.Holistic(static_image_mode=True, model_complexity=2, enable_segmentation=True) as holistic:
         results = holistic.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
@@ -119,9 +118,7 @@ async def annotate(img:UploadFile=File(...)):
             out_image, results.pose_landmarks, mp_holistic.POSE_CONNECTIONS
         )
     im = cv2.imencode('.jpg', out_image)[1]
-    imdata = pickle.dumps(im)
-    jstr = json.dumps({"annotated": base64.b64encode(imdata).decode('ascii')})
-    return jstr
+    return StreamingResponse(io.BytesIO(im.tobytes()), media_type="image/jpg")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
