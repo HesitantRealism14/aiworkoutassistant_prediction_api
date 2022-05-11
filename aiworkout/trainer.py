@@ -45,7 +45,7 @@ class Trainer():
             pickle.dump(model, file)
 
 if __name__ == "__main__":
-    df = pd.read_csv('raw_data/fitness_poses_csvs_out_basic.csv')
+    df = pd.read_csv('raw_data/fitness_poses_csvs_out_basic_5.csv')
 
     X = df.drop('class', axis=1) # features
     y = df['class'] # target value

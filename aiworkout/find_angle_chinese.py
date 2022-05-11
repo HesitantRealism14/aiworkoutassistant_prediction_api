@@ -20,7 +20,7 @@ def check(d1,d2):
     else:
         return False
 
-def return_angle_squat(img):
+def return_angle_squat_cn(img):
     detector = pm.poseDetector()
     score = 0
     while True:
@@ -53,28 +53,28 @@ def return_angle_squat(img):
                     if abs(int(squat_mins['squat_hip_right'] - squat_mins['squat_hip_left'])) <= 10:
                         if abs(int(squat_mins['squat_hip_to_ankle_right'] - squat_mins['squat_hip_to_ankle_left'])) <= 10:
                             score += 100
-                            return f'score = {score} => Nice! Your shoulder,hip and knees are on the same line. Keep your abs and hips tighten.'
+                            return f'分数 = {score} => 动作标准!站立时保持肩臀膝三点一线.收紧腹部核心.夹紧臀部肌肉.'
                         else:
                             score += 50
                             ha_right = squat_mins['squat_hip_to_ankle_right']
                             ha_left = squat_mins['squat_hip_to_ankle_left']
-                            return f'score = {score} => AI detect knee imbalance! Knee angles : right - {ha_right},left - {ha_left} . Keep knees over ankles,straight your back,and tighten your abdominals.'
+                            return f'分数 = {score} => 双膝不平衡! 两膝角度 : 右 - {ha_right},左 - {ha_left} . 膝盖不可超过脚尖.挺直背部.收紧腹部核心.'
                     else:
                         score += 30
                         h_right = squat_mins['squat_hip_right']
                         h_left = squat_mins['squat_hip_left']
-                        return f'score = {score} => AI detect hip imbalance! Hip angles : right - {h_right},left - {h_left} . Try to push hip away from you,straight your back,and tighten your abdominals.'
+                        return f'分数 = {score} => 臀部不平衡! 臀部角度 : 右 - {h_right},左 - {h_left} . 向后推臀.背部挺直.收紧腹部核心.'
 
                 else:
                     score += 30
                     hh_right = squat_mins['squat_head_to_hip_right']
                     hh_left = squat_mins['squat_head_to_hip_left']
-                    return f'score = {score} => AI detect shoulder imbalance! Shoulder angles :right-{hh_right},left-{hh_left}. Shoulders are not parallel to ground.'
+                    return f'分数 = {score} => 双肩不平衡! 双肩角度 : 右 - {hh_right},左 - {hh_left}. 肩膀需与地面保持平行.'
             else:
                 score = score
-                return f'score = {score} => A front picture would be better.Or a side picture to check your back.'
+                return '角度测算偏差过大.正面照片可以帮助我们对您的动作进行精确分析.'
 
-def return_angle_deadlift(img):
+def return_angle_deadlift_cn(img):
     detector = pm.poseDetector()
     score = 0
     while True:
@@ -108,28 +108,28 @@ def return_angle_deadlift(img):
                     if abs(int(deadlift_mins['deadlift_head_to_ankle_right'] - deadlift_mins['deadlift_head_to_ankle_left'])) <=10:
                         if abs(int(deadlift_mins['deadlift_head_to_hip_right'] - deadlift_mins['deadlift_head_to_hip_left'])) <= 10:
                             score += 100
-                            return f'score = {score} => Good job! Focus on your abs,keep your back straight and tighten your hip.'
+                            return f'分数 = {score} => 动作标准! 注意收紧腹部核心. 挺直背部. 夹紧臀部.'
                         else:
                             score +=50
                             hh_right = deadlift_mins['deadlift_head_to_hip_right']
                             hh_left = deadlift_mins['deadlift_head_to_hip_left']
-                            return f'score = {score} => AI detect shoulder imbalance! Shoulder angles : right-{hh_right},left-{hh_left} . Keep your shoulders parallel to ground.Straight your back. Otherwise your waist and knees will be hurt!'
+                            return f'分数 = {score} => 双肩不平衡! 双肩角度 : 右 - {hh_right}, 左 - {hh_left} . 双肩需与地面平行.挺直背部. 收紧腹部核心. 避免伤及腰部和膝盖.'
                     else:
                         score += 30
                         ha_right = deadlift_mins['deadlift_head_to_ankle_right']
                         ha_left = deadlift_mins['deadlift_head_to_ankle_left']
-                        return f'score = {score} => AI detect hip imbalance! Hip angles : right - {ha_right},left - {ha_left} . Tighten your hip muscles.Do not push it too far away from you. Straight your back,and tighten your abdominals.'
+                        return f'分数 = {score} => 臀部不平衡! 臀部角度 : 右 - {ha_right}, 左 - {ha_left} . 起身时夹紧臀部肌肉. 站姿状态下肩臀膝三点一线. 挺直背部.收紧腹部核心.'
                 else:
                     score += 50
                     hipa_right = deadlift_mins['deadlift_hip_to_ankle_right']
                     hipa_left = deadlift_mins['deadlift_hip_to_ankle_left']
-                    return f'score = {score} => AI detect knee imbalance! Knee angles : right - {hipa_right},left - {hipa_left} . Keep knees over ankles,straight your back,and tighten your abdominals.'
+                    return f'分数 = {score} => 双膝不平衡! 双膝角度 : 右 - {hipa_right},左 - {hipa_left} . 双膝不可过脚尖. 挺直背部. 收紧腹部核心.'
             else:
                 score = score
-                return f'score = {score} => A front picture would be better so that AI could detect your shoulders,hip and knees.'
+                return '角度测算偏差过大.正面照片可以帮助我们对您的动作进行精确分析.'
 
 
-def return_angle_bench(img):
+def return_angle_bench_cn(img):
     detector = pm.poseDetector()
     score = 0
     while True:
@@ -162,28 +162,28 @@ def return_angle_bench(img):
                     if abs(int(bench_mins['bench_arm_to_hip_right'] - bench_mins['bench_arm_to_hip_left'])) <= 20:
                         if abs(int(bench_mins['bench_arm_to_shoulder_right'] - bench_mins['bench_arm_to_shoulder_left'])) <= 20:
                             score += 100
-                            return f'score = {score} => Nice balance! Tighten your abs.'
+                            return f'分数 = {score} => 动作标准! 继续收紧腹部核心.'
                         else:
                             score += 50
                             as_right = bench_mins['bench_arm_to_shoulder_right']
                             as_left = bench_mins['bench_arm_to_shoulder_left']
-                            return f'score = {score} => AI detect elbow imbalance! Elbow angles : right - {as_right},left - {as_left}. Keep your elbows parallel to ground when doing bench press.'
+                            return f'分数 = {score} => 双肘不平衡! 肘关节角度 : 右 - {as_right},左 - {as_left}. 肘关节与身侧尽量形成直角.'
                     else:
                         score += 30
                         ah_right = bench_mins['bench_arm_to_hip_right']
                         ah_left = bench_mins['bench_arm_to_hip_left']
-                        return f'score = {score} => AI detect shoulder imbalance! Shoulder angles : right -{ah_right},left - {ah_left}. To balance both shoulders,you need to straight up your back and tighten your abdominals.'
+                        return f'score = {score} => 双肩不平衡! 双肩角度 : 右 -{ah_right},左 - {ah_left}. 挺直背部. 收紧腹部核心. 避免将力量聚集在肩部和肘部!'
                 else:
                     score += 30
                     sk_right = bench_mins['bench_shoulder_to_knee_right']
                     sk_left = bench_mins['bench_shoulder_to_knee_left']
-                    return f'score = {score} => AI detect body imbalance!  Hip angles : right - {sk_right},left - {sk_left}. Try to keep your shoulder,hip and knee on the line. Tighten your abdominals.'
+                    return f'分数 = {score} => 身体不平衡!  臀部角度 : 右 - {sk_right},左 - {sk_left}. 保持肩臀膝三点一线. 收紧腹部核心. 腰部尽量向下贴近地面.'
             else:
                 score = score
-                return 'A front picture would allow AI to detect the balance of both sides.'
+                return '角度测算偏差过大.正面照片可以帮助我们对您的动作进行精确分析.'
 
 
-def return_angle_pushup(img): #pushup angles need standardization
+def return_angle_pushup_cn(img): #pushup angles need standardization
     detector = pm.poseDetector()
     score = 0
     while True:
@@ -218,28 +218,28 @@ def return_angle_pushup(img): #pushup angles need standardization
                     if abs(int(pushup_mins_['pushup_arm_to_shoulder_right'] - pushup_mins_['pushup_arm_to_shoulder_left'])) <= 10:
                         if abs(int(pushup_mins_['pushup_head_to_ankle_right'] - pushup_mins_['pushup_head_to_ankle_left'])) <= 10:
                             score += 100
-                            return f'score = {score} => Good balance! Keep your back straight and your hip tighten downwards.'
+                            return f'分数 = {score} => 动作标准! 向下夹紧臀部肌肉. 挺直背部. 收紧腹部核心.'
                         else:
                             score += 50
                             ha_right = pushup_mins_['pushup_head_to_ankle_right']
                             ha_left = pushup_mins_['pushup_head_to_ankle_left']
-                            return f'score = {score} => Shoulder balance achieved! AI detect body imbalance! Hip angles : right - {ha_right},left - {ha_left}. Tighten your abdominals. Try to keep your head, shoulder,hip and knee on the same line, parallel to the ground.A side picture would allow AI to detect your body balance.'
+                            return f'分数 = {score} => 双肩平衡! 但肩臀膝三点夹角过小! 臀部夹角 : 右 - {ha_right},左 - {ha_left}. 收紧腹部核心. 肩臀膝三点一线. 平行于地面. 左右侧面照可以让AI为您提供更精确的肩臀膝平衡分析.'
                     else:
                         score += 30
                         as_right = pushup_mins_['pushup_arm_to_shoulder_right']
                         as_left = pushup_mins_['pushup_arm_to_shoulder_left']
-                        return f'score = {score} => AI detect elbow imbalance! Elbow angles : right - {as_right},left - {as_left}. Use both elbow strength or you may hurt your wrists.A front picture would allow AI to detect the balance of both sides.'
+                        return f'分数 = {score} => 双肘不平衡! 肘关节角度 : 右 - {as_right},左 - {as_left}. 兼用双肘力量.避免手腕受力过大而受伤. 正面照片可以让AI为您提供更精确的肘关节平衡分析.'
                 else:
                     score += 30
                     ha_right = pushup_mins_['pushup_shoulder_right']
                     ha_left = pushup_mins_['pushup_shoulder_left']
-                    return f'score = {score} => AI detect shoulder imbalance! Shoulder angles : right -{ha_right},left - {ha_left}. To balance both shoulders,you need to straight your back and tighten your abdominals.A front picture would allow AI to detect the balance of both sides.'
+                    return f'分数 = {score} => 双肩不平衡! 双肩角度 : 右 -{ha_right},左 - {ha_left}. 兼用双肩力量. 挺直背部. 收紧腹部核心. 正面照片可以让AI为您提供更精确的双肩平衡分析.'
             else:
                 score = score
-                return 'A front picture would allow AI to detect the balance of both sides.'
+                return '角度测算偏差过大.正面照片可以帮助我们对您的动作进行精确分析.'
 
 
-def return_angle_bridge(img):
+def return_angle_bridge_cn(img):
     detector = pm.poseDetector()
     score = 0
     while True:
@@ -280,32 +280,32 @@ def return_angle_bridge(img):
                         if abs(int(bridge_mins_['bridge_knee_to_toe_right'] - bridge_mins_['bridge_knee_to_toe_left'])) <= 30:
                             if abs(int(bridge_mins_['bridge_hip_right'] - bridge_mins_['bridge_hip_left'])) <= 100:
                                 score += 100
-                                return f'score = {score} => Nice! Your shoulder,hip and knees are on the same line. Tighten your abdominals and hip muscles.'
+                                return f'分数 = {score} => 动作标准! 肩臀膝三点一线. 收紧腹部核心. 保持背部挺直.'
                             else:
                                 score += 50
                                 h_right = bridge_mins_['bridge_hip_right']
                                 h_left = bridge_mins_['bridge_hip_left']
-                                return f'score = {score} => AI detect hip imbalance. Hip angles :right - {h_right},left - {h_left}. Try to use both your hip muscles.Or you may hurt your waist.'
+                                return f'分数 = {score} => 臀部不平衡! 臀部角度 :右 - {h_right},左 - {h_left}. 注意臀部发力. 避免伤及腰部.'
                         else:
                             score += 50
                             kt_right = bridge_mins_['bridge_knee_to_toe_right']
                             kt_left = bridge_mins_['bridge_knee_to_toe_left']
-                            return f'score = {score} => AI detect leg imbalance. Leg angles :right - {kt_right},left - {kt_left}. Keep your knees and toes toward.A front picture would allow AI to detect the balance of both sides.'
+                            return f'分数 = {score} => 双腿不平行! 双膝与脚尖夹角 :右 - {kt_right},左 - {kt_left}. 保持膝盖与脚尖方向一致. 正面照片可以让AI为您提供更精确的平衡分析.'
                     else:
                         score += 30
                         ha_right = bridge_mins_['bridge_hip_to_ankle_right']
                         ha_left = bridge_mins_['bridge_hip_to_ankle_left']
-                        return f'score = {score} => AI detect knee imbalance. Knee angles :right - {ha_right},left - {ha_left}. Keep your knees parallel to each other.'
+                        return f'分数 = {score} => 双膝不平衡! 双膝角度 :右 - {ha_right},左 - {ha_left}. 保持两侧大腿互相平行. 小腿与地面呈直角.'
                 else:
                     score += 30
                     sk_right = bridge_mins_['bridge_shoulder_to_knee_right']
                     sk_left = bridge_mins_['bridge_shoulder_to_knee_left']
-                    return f'score = {score} => AI detect body imbalance. Hip angles :right - {sk_right},left - {sk_left}. Tighten your abdominals. Try to keep your back,hip and knee on the same line.'
+                    return f'分数 = {score} => 身体不平衡! 臀部角度 :右 - {sk_right},左 - {sk_left}. 收紧腹部核心. 保持肩背臀膝形成一条直线.'
 
             else:
                 score = score
-                print('A front picture or side phote would allow AI to detect the balance of both sides.')
+                return '角度测算偏差过大.正面照片可以帮助我们对您的动作进行精确分析.'
 
 
 if __name__ == "__main__":
-    print(return_angle_bridge(cv2.imread('raw_data/test_img/hip bridge/hipbridges402.jpeg')))
+    print(return_angle_bridge_cn(cv2.imread('raw_data/test_img/hip bridge/hipbridges402.jpeg')))

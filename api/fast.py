@@ -5,6 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_angle_deadlift, standardize, check, return_angle_bridge, return_angle_pushup
+from aiworkout.find_angle_chinese import standardize, check, return_angle_squat_cn, return_angle_bench_cn, return_angle_deadlift_cn, return_angle_bridge_cn, return_angle_pushup_cn
 from aiworkout.params import PATH_TO_GCP_MODEL, BUCKET_NAME
 
 import cv2
@@ -107,6 +108,42 @@ async def getanglepushup(img: UploadFile=File(...)):
     nparr = np.fromstring(contents, np.uint8)
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return {'angle': return_angle_pushup(cv2_img)}
+
+
+@app.post("/getanglesquatcn")
+async def getanglesquatcn(img: UploadFile=File(...)):
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return {'angle': return_angle_squat_cn(cv2_img)}
+
+@app.post("/getanglebenchcn")
+async def getanglebenchcn(img: UploadFile=File(...)):
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return {'angle': return_angle_bench_cn(cv2_img)}
+
+@app.post("/getangledeadliftcn")
+async def getanglebenchcn(img: UploadFile=File(...)):
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return {'angle': return_angle_deadlift_cn(cv2_img)}
+
+@app.post("/getanglebridgecn")
+async def getanglebridgecn(img: UploadFile=File(...)):
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return {'angle': return_angle_bridge_cn(cv2_img)}
+
+@app.post("/getanglepushupcn")
+async def getanglepushupcn(img: UploadFile=File(...)):
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return {'angle': return_angle_pushup_cn(cv2_img)}
 
 @app.post("/annotate")
 async def annotate(img:UploadFile=File(...)):
