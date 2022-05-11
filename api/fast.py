@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from pydantic import BaseModel
 
-from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_angle_deadlift, standardize, check
+from aiworkout.find_angle import return_angle_squat, return_angle_bench, return_angle_deadlift, standardize, check, return_angle_bridge, return_angle_pushup
 from aiworkout.params import PATH_TO_GCP_MODEL, BUCKET_NAME
 
 import cv2
@@ -93,6 +93,20 @@ async def getanglebench(img: UploadFile=File(...)):
     nparr = np.fromstring(contents, np.uint8)
     cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return {'angle': return_angle_deadlift(cv2_img)}
+
+@app.post("/getanglebridge")
+async def getanglebridge(img: UploadFile=File(...)):
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return {'angle': return_angle_bridge(cv2_img)}
+
+@app.post("/getanglepushup")
+async def getanglepushup(img: UploadFile=File(...)):
+    contents = await img.read()
+    nparr = np.fromstring(contents, np.uint8)
+    cv2_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return {'angle': return_angle_pushup(cv2_img)}
 
 @app.post("/annotate")
 async def annotate(img:UploadFile=File(...)):
